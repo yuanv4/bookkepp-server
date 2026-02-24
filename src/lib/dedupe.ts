@@ -12,6 +12,10 @@ interface DedupeCandidate {
   counterparty: string | null;
 }
 
+function normalizeAmount(amount: number): number {
+  return Math.round(amount * 100) / 100;
+}
+
 function normalizeCounterparty(counterparty: string | null): string | null {
   if (!counterparty) return null;
   const trimmed = counterparty.trim();
@@ -33,7 +37,8 @@ function buildGroupKey(candidate: DedupeCandidate): string | null {
   const normalizedCounterparty = normalizeCounterparty(candidate.counterparty);
   if (!normalizedCounterparty) return null;
   const { dayKey } = getUtcDayRange(candidate.occurredAt);
-  return `${dayKey}|${candidate.amount}|${candidate.direction}|${normalizedCounterparty}`;
+  const normalizedAmount = normalizeAmount(candidate.amount);
+  return `${dayKey}|${normalizedAmount.toFixed(2)}|${candidate.direction}|${normalizedCounterparty}`;
 }
 
 function buildGroupId(groupKey: string): string {
@@ -60,11 +65,14 @@ export async function applyCrossSourceDeduplication(
     if (!normalizedCounterparty) continue;
 
     const { start, end } = getUtcDayRange(sample.occurredAt);
+    const normalizedAmount = normalizeAmount(sample.amount);
+    const amountLowerBound = normalizedAmount - 0.005;
+    const amountUpperBound = normalizedAmount + 0.005;
 
     const groupTransactions = await prisma.transaction.findMany({
       where: {
         occurredAt: { gte: start, lt: end },
-        amount: sample.amount,
+        amount: { gte: amountLowerBound, lt: amountUpperBound },
         direction: sample.direction,
         counterparty: normalizedCounterparty,
       },
