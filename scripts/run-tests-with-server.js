@@ -9,7 +9,7 @@ const { fileURLToPath } = require("url");
 
 const DEFAULT_PORT = 3000;
 const BASE_HOST = process.env.TEST_HOST || "http://localhost";
-const CHECK_PATH = process.env.HEALTH_PATH || "/";
+const CHECK_PATH = process.env.HEALTH_PATH || "/health";
 const WAIT_TIMEOUT_MS = Number(process.env.SERVER_WAIT_TIMEOUT_MS || 60_000);
 const POLL_INTERVAL_MS = 500;
 const REQUEST_TIMEOUT_MS = Number(process.env.SERVER_CHECK_TIMEOUT_MS || 2_000);
@@ -111,7 +111,7 @@ async function isServerReadyOnce(baseUrl) {
 function startServer(port, mode, env) {
   const script = mode === "start" ? "start" : "dev";
   console.log(`未检测到可用服务，启动 ${script} 服务器（端口 ${port}）...`);
-  const child = spawn("npm", ["run", script, "--", "-p", String(port)], {
+  const child = spawn("npm", ["run", script, "--", "--port", String(port)], {
     stdio: "inherit",
     shell: true,
     env,
@@ -253,7 +253,7 @@ async function run() {
   console.log(`准备使用服务地址：${baseUrl}`);
 
   if (options.build && serverMode === "start") {
-    console.log("开始构建应用（next build）...");
+    console.log("开始构建应用（tsc --noEmit）...");
     await runCommand("npm", ["run", "build"], process.env);
   }
 

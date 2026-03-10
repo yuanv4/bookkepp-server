@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "tsx watch src/server/index.ts",
+    "build": "tsc --noEmit",
+    "start": "tsx src/server/index.ts",
     "lint": "eslint .",
     "test": "node scripts/run-tests-with-server.js",
     "test:dev": "node scripts/run-tests-with-server.js --mode dev",
@@ -19,27 +19,16 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@fastify/multipart": "^9.3.0",
     "@prisma/adapter-better-sqlite3": "^7.2.0",
     "@prisma/client": "^7.2.0",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.3",
-    "@types/react": "^19.2.7",
     "better-sqlite3": "^12.5.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "echarts": "^6.0.0",
+    "fastify": "^5.6.1",
     "iconv-lite": "^0.7.1",
-    "lucide-react": "^0.562.0",
-    "next": "^16.1.1",
     "papaparse": "^5.5.3",
     "pdf-parse": "^2.4.5",
-    "postcss": "^8.5.6",
     "prisma": "^7.2.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "xlsx": "^0.18.5",
     "zod": "^4.3.5"
@@ -47,10 +36,11 @@
   "devDependencies": {
     "@types/iconv-lite": "^0.0.1",
     "@types/papaparse": "^5.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.1",
-    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.6",
     "vitest": "^2.1.8"
   }
 }
